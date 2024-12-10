@@ -36,9 +36,7 @@ actor {
   private stable var nextDogId : DogId = 0;
   private stable var dogs : Trie.Trie<DogId, Dog> = Trie.empty();
 
-  // Existing previous functions (addDog, updateDog, deleteDog, adoptDog)...
-
-  // New function to get a single dog by ID
+  // Function to retrieve a single dog's details by its ID
   public query func getDog(dogId : DogId) : async ?ResponseDog {
     let result = Trie.find(dogs, key(dogId), Nat32.equal);
     switch result {
@@ -56,7 +54,7 @@ actor {
     }
   };
 
-  // New function to list all dogs
+  // Function to list all dogs in the shelter
   public query func listAllDogs() : async [ResponseDog] {
     let buffer = Buffer.Buffer<ResponseDog>(0);
 
@@ -74,7 +72,7 @@ actor {
     return Buffer.toArray(buffer)
   };
 
-  // Advanced search function with multiple criteria
+  // Function to search dogs based on multiple criteria
   public query func searchDogs(criteria : SearchCriteria) : async [ResponseDog] {
     let buffer = Buffer.Buffer<ResponseDog>(0);
 
@@ -116,7 +114,7 @@ actor {
     return Buffer.toArray(buffer)
   };
 
-  // Function to neuter a dog
+  // Function to neuter a dog by updating its record
   public func neuterDog(dogId : DogId) : async Bool {
     let result = Trie.find(dogs, key(dogId), Nat32.equal);
     let exists = Option.isSome(result);
@@ -143,7 +141,7 @@ actor {
     return exists
   };
 
-  // Function to get shelter statistics
+  // Function to retrieve shelter statistics such as total, adopted, available, and neutered dogs
   public query func getShelterStats() : async {
     totalDogs : Nat;
     adoptedDogs : Nat;
@@ -168,6 +166,7 @@ actor {
     }
   };
 
+  // Private helper function to create keys for Trie operations
   private func key(x : DogId) : Trie.Key<DogId> {
     return {hash = x; key = x}
   }
